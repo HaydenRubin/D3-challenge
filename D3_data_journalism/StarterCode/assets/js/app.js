@@ -27,7 +27,7 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Initial Params
-var chosenXAxis = "hair_length";
+var chosenXAxis = "poverty"; // need to change!
 
 // function used for updating x-scale var upon click on axis label
 function xScale(stateData, chosenXAxis) {
@@ -64,37 +64,37 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
   return circlesGroup;
 }
 
-// // function used for updating circles group with new tooltip
-// function updateToolTip(chosenXAxis, circlesGroup) {
+// function used for updating circles group with new tooltip
+function updateToolTip(chosenXAxis, circlesGroup) {
 
-//   var label;
+  var label;
 
-//   if (chosenXAxis === "hair_length") {
-//     label = "Hair Length:";
-//   }
-//   else {
-//     label = "# of Albums:";
-//   }
+  if (chosenXAxis === "hair_length") {
+    label = "Hair Length:";
+  }
+  else {
+    label = "# of Albums:";
+  }
 
-//   var toolTip = d3.tip()
-//     .attr("class", "tooltip")
-//     .offset([80, -60])
-//     .html(function(d) {
-//       return (`${d.rockband}<br>${label} ${d[chosenXAxis]}`);
-//     });
+  var toolTip = d3.tip()
+    .attr("class", "tooltip")
+    .offset([80, -60])
+    .html(function(d) {
+      return (`${d.rockband}<br>${label} ${d[chosenXAxis]}`);
+    });
 
-//   circlesGroup.call(toolTip);
+  circlesGroup.call(toolTip);
 
-//   circlesGroup.on("mouseover", function(data) {
-//     toolTip.show(data);
-//   })
-//     // onmouseout event
-//     .on("mouseout", function(data, index) {
-//       toolTip.hide(data);
-//     });
+  circlesGroup.on("mouseover", function(data) {
+    toolTip.show(data);
+  })
+    // onmouseout event
+    .on("mouseout", function(data, index) {
+      toolTip.hide(data);
+    });
 
-//   return circlesGroup;
-// }
+  return circlesGroup;
+}
 
 // Retrieve data from the CSV file and execute everything below
 d3.csv("../StarterCode/assets/data/data.csv").then(function(stateData, err) {
@@ -102,9 +102,8 @@ d3.csv("../StarterCode/assets/data/data.csv").then(function(stateData, err) {
 
   // parse data
   stateData.forEach(function(data) {
-    data.hair_length = +data.hair_length;
-    data.num_hits = +data.num_hits;
-    data.num_albums = +data.num_albums;
+    data.poverty = +data.poverty; // +data.poverty converts to number ... but it is already a number!
+    data.age = +data.age; // +data.age converts to a anumber ... but it is already a number!
   });
 
   // xLinearScale function above csv import 
@@ -112,7 +111,7 @@ d3.csv("../StarterCode/assets/data/data.csv").then(function(stateData, err) {
 
   // Create y scale function
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(stateData, d => d.num_hits)])
+    .domain([0, d3.max(stateData, d => d.healthcare)])
     .range([height, 0]);
 
   // Create initial axis functions
@@ -135,7 +134,7 @@ d3.csv("../StarterCode/assets/data/data.csv").then(function(stateData, err) {
     .enter()
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
-    .attr("cy", d => yLinearScale(d.num_hits))
+    .attr("cy", d => yLinearScale(d.healthcare))
     .attr("r", 20)
     .attr("fill", "pink")
     .attr("opacity", ".5");
@@ -167,8 +166,8 @@ d3.csv("../StarterCode/assets/data/data.csv").then(function(stateData, err) {
     .classed("axis-text", true)
     .text("Number of Billboard 500 Hits");
 
-//   // updateToolTip function above csv import
-//   var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+  // updateToolTip function above csv import
+  var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
   // x axis labels event listener
   labelsGroup.selectAll("text")
@@ -196,7 +195,7 @@ d3.csv("../StarterCode/assets/data/data.csv").then(function(stateData, err) {
         circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
         // changes classes to change bold text
-        if (chosenXAxis === "num_albums") {
+        if (chosenXAxis === "age") {
           albumsLabel
             .classed("active", true)
             .classed("inactive", false);
