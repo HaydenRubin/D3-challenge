@@ -1,5 +1,4 @@
 // @TODO: YOUR CODE HERE!
-
 // Copy & Pasted from Day 13 Activity 12
 
 var svgWidth = 960;
@@ -31,11 +30,11 @@ var chartGroup = svg.append("g")
 var chosenXAxis = "hair_length";
 
 // function used for updating x-scale var upon click on axis label
-function xScale(hairData, chosenXAxis) {
+function xScale(stateData, chosenXAxis) {
   // create scales
   var xLinearScale = d3.scaleLinear()
-    .domain([d3.min(hairData, d => d[chosenXAxis]) * 0.8,
-      d3.max(hairData, d => d[chosenXAxis]) * 1.2
+    .domain([d3.min(stateData, d => d[chosenXAxis]) * 0.8,
+      d3.max(stateData, d => d[chosenXAxis]) * 1.2
     ])
     .range([0, width]);
 
@@ -65,55 +64,55 @@ function renderCircles(circlesGroup, newXScale, chosenXAxis) {
   return circlesGroup;
 }
 
-// function used for updating circles group with new tooltip
-function updateToolTip(chosenXAxis, circlesGroup) {
+// // function used for updating circles group with new tooltip
+// function updateToolTip(chosenXAxis, circlesGroup) {
 
-  var label;
+//   var label;
 
-  if (chosenXAxis === "hair_length") {
-    label = "Hair Length:";
-  }
-  else {
-    label = "# of Albums:";
-  }
+//   if (chosenXAxis === "hair_length") {
+//     label = "Hair Length:";
+//   }
+//   else {
+//     label = "# of Albums:";
+//   }
 
-  var toolTip = d3.tip()
-    .attr("class", "tooltip")
-    .offset([80, -60])
-    .html(function(d) {
-      return (`${d.rockband}<br>${label} ${d[chosenXAxis]}`);
-    });
+//   var toolTip = d3.tip()
+//     .attr("class", "tooltip")
+//     .offset([80, -60])
+//     .html(function(d) {
+//       return (`${d.rockband}<br>${label} ${d[chosenXAxis]}`);
+//     });
 
-  circlesGroup.call(toolTip);
+//   circlesGroup.call(toolTip);
 
-  circlesGroup.on("mouseover", function(data) {
-    toolTip.show(data);
-  })
-    // onmouseout event
-    .on("mouseout", function(data, index) {
-      toolTip.hide(data);
-    });
+//   circlesGroup.on("mouseover", function(data) {
+//     toolTip.show(data);
+//   })
+//     // onmouseout event
+//     .on("mouseout", function(data, index) {
+//       toolTip.hide(data);
+//     });
 
-  return circlesGroup;
-}
+//   return circlesGroup;
+// }
 
 // Retrieve data from the CSV file and execute everything below
-d3.csv("../data/data.csv").then(function(hairData, err) {
+d3.csv("../StarterCode/assets/data/data.csv").then(function(stateData, err) {
   if (err) throw err;
 
   // parse data
-  hairData.forEach(function(data) {
+  stateData.forEach(function(data) {
     data.hair_length = +data.hair_length;
     data.num_hits = +data.num_hits;
     data.num_albums = +data.num_albums;
   });
 
-  // xLinearScale function above csv import
-  var xLinearScale = xScale(hairData, chosenXAxis);
+  // xLinearScale function above csv import 
+  var xLinearScale = xScale(stateData, chosenXAxis);
 
   // Create y scale function
   var yLinearScale = d3.scaleLinear()
-    .domain([0, d3.max(hairData, d => d.num_hits)])
+    .domain([0, d3.max(stateData, d => d.num_hits)])
     .range([height, 0]);
 
   // Create initial axis functions
@@ -132,7 +131,7 @@ d3.csv("../data/data.csv").then(function(hairData, err) {
 
   // append initial circles
   var circlesGroup = chartGroup.selectAll("circle")
-    .data(hairData)
+    .data(stateData)
     .enter()
     .append("circle")
     .attr("cx", d => xLinearScale(d[chosenXAxis]))
@@ -168,8 +167,8 @@ d3.csv("../data/data.csv").then(function(hairData, err) {
     .classed("axis-text", true)
     .text("Number of Billboard 500 Hits");
 
-  // updateToolTip function above csv import
-  var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+//   // updateToolTip function above csv import
+//   var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
 
   // x axis labels event listener
   labelsGroup.selectAll("text")
@@ -185,7 +184,7 @@ d3.csv("../data/data.csv").then(function(hairData, err) {
 
         // functions here found above csv import
         // updates x scale for new data
-        xLinearScale = xScale(hairData, chosenXAxis);
+        xLinearScale = xScale(stateData, chosenXAxis);
 
         // updates x axis with transition
         xAxis = renderAxes(xLinearScale, xAxis);
