@@ -27,7 +27,7 @@ var chartGroup = svg.append("g")
   .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
 // Initial Params
-var chosenXAxis = "poverty"; // need to change!
+var chosenXAxis = "poverty"; 
 
 // function used for updating x-scale var upon click on axis label
 function xScale(stateData, chosenXAxis) {
